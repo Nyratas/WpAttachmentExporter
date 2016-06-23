@@ -1,6 +1,6 @@
 # Wordpress Attachment Exporter
 
-_Version 0.1.0_
+_Version 0.1.1_
 
 **Warning**: This is a PHP library, not a Wordpress _plugin_. Therefore, it can only be used inside a PHP file.
 
@@ -52,6 +52,35 @@ In continuity of the above example:
 
 ```php
 $export->clean();
+```
+
+### Download ZIP
+
+You can download the zip directly from your browser:
+
+```php
+$export->download();
+```
+
+This will automatically perform a `clean()` action once the file is downloaded. If you want prevent this behavior, just pass `false` to the `download()` method:
+
+```php
+// The generated ZIP will remain on the server
+$export->download(false);
+```
+
+### Loging
+
+If you want to know what happened during the export, take a look at the logs. This method will create a log file containing all the information you should need. More info about loging in the section below (Debugging & loging).
+
+```php
+// This will generate a file named wpattachmentexporter-log-[date]
+// The file will be place at the scope's root (probably wordpress's root).
+$export->log();
+
+// You can specify a path where to put the logs if you want
+// (the directory has to exist and will not be created automatically)
+$export->log('../logs/WAE');
 ```
 
 
