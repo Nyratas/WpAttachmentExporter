@@ -55,11 +55,15 @@ class Export
             }
       }
 
-      public function log()
+      public function log($path = '.\\')
       {
-            $f = fopen('wpattachmentexporter-log-' . date('d-m-y_H-i-s'), 'w');
-            fwrite($f, json_encode($this->log, JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE));
-            fclose($f);
+            $path = realpath($path);
+            if($path){
+                  $path = $path . DIRECTORY_SEPARATOR . 'wpattachmentexporter-log-' . date('d-m-y_H-i-s');
+                  $f = fopen($path, 'w');
+                  fwrite($f, json_encode($this->log, JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES));
+                  fclose($f);
+            }
       }
 
       protected function performQuery()
