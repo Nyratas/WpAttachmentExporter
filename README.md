@@ -4,9 +4,9 @@ _Version 0.1.1_
 
 **Warning**: This is a PHP library, not a Wordpress _plugin_. Therefore, it can only be used inside a PHP file.
 
-Ever had to migrate a huge Wordpress website from one server to another ? If you did, you probably know it can be a pain in the ass since Wordpress creates thousands of thumbnails and stores them all amongst the original files. If you don't want to waste hours downloading and re-uploading the `/uploads/` directory, I can help you.
+Ever had to migrate a huge Wordpress website from one server to another ? If you did, you probably know it can be a pain in the ass since Wordpress creates thousands of thumbnails and stores them amongst the original files. If you don't want to waste hours downloading and re-uploading the `/uploads/` directory, I can help you.
 
-My thought was to select the registered original attachment files and put them in a ZIP file I could easily download. Well, that's exactly what this library does.
+My thought was to select the registered original attachment files and put them in a ZIP file, which I could easily download. Well, that's exactly what this library does.
 
 But why only the registered original files ? Because you actually don't need all the thumbnails or other duplicates of the original files. The URL to the original file is the only important data stored in the database. This means you only should migrate those files and regenerate the thumbnails afterwards, using an existing plugin or whatever you want.
 
@@ -21,7 +21,7 @@ Download the core and `require` the autoload file:
 require_once('WpAttachmentExporter/autoload.php');
 ```
 
-Make sure this is done somewhere inside Wordpress's scope, because we'll need the `$wpdb` object (and some other other Wordpress stuff).
+Make sure this is done somewhere inside Wordpress's scope, because we'll need the `$wpdb` object (and some other Wordpress stuff).
 
 
 ## Create an export
@@ -43,35 +43,35 @@ That's all. The ZIP file is now stored in `/WpAttachmentExporter/tmp/WpAttachmen
 
 ## Additional methods
 
-Even if the first `zip()` method already takes care of a lot of work, there are some other useful fucntions you may need.
+Even if the first `zip()` method already takes care of a lot of work, there are some other useful functions you may need.
 
-
-### Delete the generated ZIP
-
-In continuity of the above example:
-
-```php
-$export->clean();
-```
 
 ### Download ZIP
 
-You can download the zip directly from your browser:
+You can download the generated zip directly from your browser:
 
 ```php
 $export->download();
 ```
 
-This will automatically perform a `clean()` action once the file is downloaded. If you want prevent this behavior, just pass `false` to the `download()` method:
+This will automatically perform a `clean()` action once the file is downloaded. If you want to prevent this behavior, just pass `false` to the `download()` method:
 
 ```php
 // The generated ZIP will remain on the server
 $export->download(false);
 ```
 
+### Delete ZIP manually
+
+Easy!
+
+```php
+$export->clean();
+```
+
 ### Loging
 
-If you want to know what happened during the export, take a look at the logs. This method will create a log file containing all the information you should need. More info about loging in the section below (Debugging & loging).
+If you want to know what happened during the export, you should take a look at the logs. There are different ways to read the logs, but using the `log()` method is probalby the quickest. This method will create a file containing all the information you should need. More info about loging in the section below (Debugging & loging).
 
 ```php
 // This will generate a file named wpattachmentexporter-log-[date]
