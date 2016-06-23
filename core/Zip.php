@@ -7,6 +7,7 @@ class Zip
       protected $zip;
       protected $dir = 'tmp';
       public $file = 'WpAttachmentExport.zip';
+      public $src;
       public $error = false;
 
       const E_EMPTY = 20;
@@ -35,7 +36,7 @@ class Zip
       {
             if($this->zip){
                   $this->zip->close();
-                  if(!file_exists($this->file)){
+                  if(!file_exists($this->src)){
                         $this->error = Zip::E_NO_SAVE;
                         return false;
                   }
@@ -49,15 +50,15 @@ class Zip
             $dir = realpath(__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR);
             $this->dir = $dir . DIRECTORY_SEPARATOR . $this->dir;
             if(!is_dir($this->dir)){
-                  if(!mkdir($this->dir, 0600)) $this->error = Zip::E_UNABLE_MKDIR;
+                  if(!mkdir($this->dir, 0777)) $this->error = Zip::E_UNABLE_MKDIR;
             }
-            $this->file = realpath($this->dir) . DIRECTORY_SEPARATOR . $this->file;
+            $this->src = realpath($this->dir) . DIRECTORY_SEPARATOR . $this->file;
       }
 
       protected function makeFile()
       {
             if($this->error) return false;
             $this->zip = new \ZipArchive;
-            if($this->zip->open($this->file, file_exists($this->file) ? \ZIPARCHIVE::OVERWRITE : \ZIPARCHIVE::CREATE) !== true) $this->error = Zip::E_NO_OPEN;
+            if($this->zip->open($this->src, file_exists($this->src) ? \ZIPARCHIVE::OVERWRITE : \ZIPARCHIVE::CREATE) !== true) $this->error = Zip::E_NO_OPEN;
       }
 }

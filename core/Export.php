@@ -13,6 +13,7 @@ class Export
 
       const E_UNLINK = 30;
       const E_WPDB = 31;
+      const E_NO_ARCHIVE = 32;
 
       function __construct()
       {
@@ -29,6 +30,20 @@ class Export
             }
             $this->log('success', 0, $this->archive);
             return true;
+      }
+
+      public function download($clean = true)
+      {
+            if(!$this->archive) return $this->log('warning', Export::E_NO_ARCHIVE);
+            if(!$this->archive->error){
+                  header('Content-type: application/zip'); 
+                  header('Content-Disposition: attachment; filename=' . $this->archive->file);
+                  header('Content-length: ' . filesize($this->archive->src));
+                  header('Pragma: no-cache'); 
+                  header('Expires: 0'); 
+                  readfile($this->archive->src);
+                  if($clean) $this->clean();
+            }
       }
 
       public function clean()
@@ -86,7 +101,7 @@ class Export
       {
             switch ($code) {
                   case 0:
-                        return 'Zip archive <em>' . $arg->file . '</em> successfully created.';
+                        return 'Zip archive <em>' . $arg->src . '</em> successfully created.';
                         break;
                   case 1:
                         return 'Zip archive was successfully removed.';
@@ -111,6 +126,9 @@ class Export
                         break;
                   case Export::E_WPDB:
                         return 'The Wordpress <em>$wpdb</em> object was not found.';
+                        break;
+                  case Export::E_NO_ARCHIVE:
+                        return 'Cannot download ZIP, archive has not been generated yet.';
                         break;
                   default: return false; break;
             }
