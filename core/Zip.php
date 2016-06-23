@@ -1,6 +1,6 @@
 <?php
 
-namespace WpAttachmentExport;
+namespace WpAttachmentExporter;
 
 class Zip
 {
