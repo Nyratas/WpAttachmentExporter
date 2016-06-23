@@ -35,6 +35,7 @@ class Export
       {
             if($this->archive && file_exists($this->archive->file)){
                   if(!unlink($this->archive->file)) $this->log('warning', Export::E_UNLINK);
+                  else $this->log('success',1);
                   $this->archive = null;
             }
       }
@@ -86,6 +87,9 @@ class Export
             switch ($code) {
                   case 0:
                         return 'Zip archive <em>' . $arg->file . '</em> successfully created.';
+                        break;
+                  case 1:
+                        return 'Zip archive was successfully removed.';
                         break;
                   case File::E_NOT_EXISTS:
                         return 'File <em>' . $arg->src . '</em> does not exist. Skipping.';
