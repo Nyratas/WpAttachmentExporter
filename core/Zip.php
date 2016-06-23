@@ -5,7 +5,7 @@ namespace WpAttachmentExporter;
 class Zip
 {
       protected $zip;
-      protected $dir = 'tmp';
+      public $dir = 'tmp';
       public $file = 'WpAttachmentExport.zip';
       public $src;
       public $error = false;

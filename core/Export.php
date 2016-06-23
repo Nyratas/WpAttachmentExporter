@@ -25,16 +25,16 @@ class Export
       {
             $this->archive = new Zip($this->repository);
             if($this->archive->error) {
-                  $this->log('error', $this->archive->error);
+                  $this->addLog('error', $this->archive->error);
                   return false;
             }
-            $this->log('success', 0, $this->archive);
+            $this->addLog('success', 0, $this->archive);
             return true;
       }
 
       public function download($clean = true)
       {
-            if(!$this->archive) return $this->log('warning', Export::E_NO_ARCHIVE);
+            if(!$this->archive) return $this->addLog('warning', Export::E_NO_ARCHIVE);
             if(!$this->archive->error){
                   header('Content-type: application/zip'); 
                   header('Content-Disposition: attachment; filename=' . $this->archive->file);
@@ -48,18 +48,25 @@ class Export
 
       public function clean()
       {
-            if($this->archive && file_exists($this->archive->file)){
-                  if(!unlink($this->archive->file)) $this->log('warning', Export::E_UNLINK);
-                  else $this->log('success',1);
+            if($this->archive && file_exists($this->archive->src)){
+                  if(!unlink($this->archive->src)) $this->addLog('warning', Export::E_UNLINK);
+                  else $this->addLog('success',1);
                   $this->archive = null;
             }
+      }
+
+      public function log()
+      {
+            $f = fopen('wpattachmentexporter-log-' . date('d-m-y_H-i-s'), 'w');
+            fwrite($f, json_encode($this->log, JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE));
+            fclose($f);
       }
 
       protected function performQuery()
       {
             global $wpdb;
             if(!is_object($wpdb)) {
-                  $this->log('error',Export::E_WPDB);
+                  $this->addLog('error',Export::E_WPDB);
                   return false;
             }
             $sql = 'SELECT ID, guid FROM ' . $wpdb->posts . ' WHERE post_type="attachment";';
@@ -81,14 +88,14 @@ class Export
             foreach ($q as $o) {
                   if(strlen($o->guid)){
                         $o = new File($o->guid, $this->url_home, $this->dir_home, $this->dir_uploads);
-                        if($o->error) $this->log('warning', $o->error, $o);
+                        if($o->error) $this->addLog('warning', $o->error, $o);
                         else array_push($a, $o);
                   }
             }
             return $a;
       }
 
-      protected function log($type, $code, $arg = false)
+      protected function addLog($type, $code, $arg = false)
       {
             $o = new \stdClass();
             $o->type = $type;
